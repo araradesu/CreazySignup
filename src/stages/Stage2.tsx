@@ -23,12 +23,10 @@ const Stage2: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
   const [checkPath, setCheckPath] = useState<number[]>([]);
 
-  // ボタン用の状態
-  const [clickCount, setClickCount] = useState(0);
-  const [mashStartTime, setMashStartTime] = useState<number | null>(null);
-  
+  const [, setClickCount] = useState(0);
+  const [, setMashStartTime] = useState<number | null>(null);
   const [holdStart, setHoldStart] = useState<number | null>(null);
-  const [holdProgressMs, setHoldProgressMs] = useState(0);
+  const [, setHoldProgressMs] = useState(0);
 
   const holdDisplayIntervalRef = useRef<number | null>(null);
   const mashTimerRef = useRef<number | null>(null);
@@ -173,7 +171,7 @@ const Stage2: React.FC = () => {
         clearTimeout(mashTimerRef.current);
       }
       
-      setClickCount(prev => {
+      setClickCount((prev: number) => {
         const nextCount = prev + 1;
         setMashStartTime(Date.now()); // Visual effect start
         return nextCount;
@@ -181,7 +179,7 @@ const Stage2: React.FC = () => {
       
       mashTimerRef.current = window.setTimeout(() => {
         // 0.7秒経過で回数確定
-        setClickCount(currentCount => {
+        setClickCount((currentCount: number) => {
           if (currentCount === buttonRule.targetClicks && isCheckboxValid()) {
             setStage(3);
           } else {

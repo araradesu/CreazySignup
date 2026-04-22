@@ -39,7 +39,8 @@ const generateTiles = (): TileData[] => {
   
   return combined.map((item, index) => ({
     id: index,
-    ...item
+    isAnimal: item.isAnimal as boolean,
+    imgSrc: item.imgSrc as string
   }));
 };
 

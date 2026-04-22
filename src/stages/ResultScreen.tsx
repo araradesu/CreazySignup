@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../store/useGameStore';
-import { Trophy, TimerReset, Sparkles, Send, List, Calendar } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Trophy, TimerReset, Sparkles, Send, Calendar } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface RankingEntry {
   name: string;

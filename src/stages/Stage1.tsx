@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore, UserData } from '../store/useGameStore';
-import { RuleType, ABSOLUTE_RULES, getRandomOptionalRules, generateValidRules } from '../utils/passwordRules';
+import { RuleType, generateValidRules } from '../utils/passwordRules';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
