@@ -2,6 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { Play, AlertTriangle, Trophy, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { supabase } from '../utils/supabase';
 
 interface RankingEntry {
   name: string;
@@ -15,23 +16,31 @@ const StartScreen: React.FC = () => {
   const [dailyRankings, setDailyRankings] = React.useState<RankingEntry[]>([]);
   const [tab, setTab] = React.useState<'all' | 'daily'>('all');
 
-  React.useEffect(() => {
+  const fetchRankings = React.useCallback(async () => {
     const today = new Date().toLocaleDateString('ja-JP');
+
+    // 歴代ランキング取得
+    const { data: allData } = await supabase
+      .from('rankings')
+      .select('name, time, date')
+      .order('time', { ascending: true })
+      .limit(10);
     
-    // 歴代ランキング
-    const savedAllTime = localStorage.getItem('crazy_signup_alltime');
-    if (savedAllTime) setAllTimeRankings(JSON.parse(savedAllTime));
+    if (allData) setAllTimeRankings(allData);
 
-    // デイリーランキング
-    const savedDaily = localStorage.getItem('crazy_signup_daily');
-    const lastDailyDate = localStorage.getItem('crazy_signup_daily_date');
+    // デイリーランキング取得
+    const { data: dailyData } = await supabase
+      .from('rankings')
+      .select('name, time, date')
+      .eq('date', today)
+      .order('time', { ascending: true });
 
-    if (lastDailyDate === today && savedDaily) {
-      setDailyRankings(JSON.parse(savedDaily));
-    } else {
-      setDailyRankings([]);
-    }
+    if (dailyData) setDailyRankings(dailyData);
   }, []);
+
+  React.useEffect(() => {
+    fetchRankings();
+  }, [fetchRankings]);
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);

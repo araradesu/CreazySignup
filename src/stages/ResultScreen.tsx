@@ -2,6 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { Trophy, TimerReset, Sparkles, Send, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { supabase } from '../utils/supabase';
 
 interface RankingEntry {
   name: string;
@@ -16,48 +17,52 @@ const ResultScreen: React.FC = () => {
   const [allTimeRankings, setAllTimeRankings] = React.useState<RankingEntry[]>([]);
   const [dailyRankings, setDailyRankings] = React.useState<RankingEntry[]>([]);
   const [tab, setTab] = React.useState<'all' | 'daily'>('all');
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  // ランキングの読み込みと日付チェック
-  React.useEffect(() => {
+  // ランキングの読み込み（Supabaseから）
+  const fetchRankings = React.useCallback(async () => {
+    setIsLoading(true);
     const today = new Date().toLocaleDateString('ja-JP');
+
+    // 歴代ランキング取得
+    const { data: allData } = await supabase
+      .from('rankings')
+      .select('name, time, date')
+      .order('time', { ascending: true })
+      .limit(10);
     
-    // 歴代ランキング
-    const savedAllTime = localStorage.getItem('crazy_signup_alltime');
-    if (savedAllTime) setAllTimeRankings(JSON.parse(savedAllTime));
+    if (allData) setAllTimeRankings(allData);
 
-    // デイリーランキング
-    const savedDaily = localStorage.getItem('crazy_signup_daily');
-    const lastDailyDate = localStorage.getItem('crazy_signup_daily_date');
+    // デイリーランキング取得
+    const { data: dailyData } = await supabase
+      .from('rankings')
+      .select('name, time, date')
+      .eq('date', today)
+      .order('time', { ascending: true });
 
-    if (lastDailyDate === today && savedDaily) {
-      setDailyRankings(JSON.parse(savedDaily));
-    } else {
-      // 日付が変わっていたらクリア
-      setDailyRankings([]);
-      localStorage.setItem('crazy_signup_daily', JSON.stringify([]));
-      localStorage.setItem('crazy_signup_daily_date', today);
-    }
+    if (dailyData) setDailyRankings(dailyData);
+    setIsLoading(false);
   }, []);
 
-  const handleRegister = () => {
+  React.useEffect(() => {
+    fetchRankings();
+  }, [fetchRankings]);
+
+  const handleRegister = async () => {
     if (!nickname.trim()) return;
     const today = new Date().toLocaleDateString('ja-JP');
-    const entry = { name: nickname, time: timerMs, date: today };
+    
+    // Supabaseに登録
+    const { error } = await supabase
+      .from('rankings')
+      .insert([{ name: nickname, time: timerMs, date: today }]);
 
-    // 歴代更新（上位10名）
-    const newAllTime = [...allTimeRankings, entry]
-      .sort((a, b) => a.time - b.time)
-      .slice(0, 10);
-    setAllTimeRankings(newAllTime);
-    localStorage.setItem('crazy_signup_alltime', JSON.stringify(newAllTime));
-
-    // デイリー更新（全員）
-    const newDaily = [...dailyRankings, entry]
-      .sort((a, b) => a.time - b.time);
-    setDailyRankings(newDaily);
-    localStorage.setItem('crazy_signup_daily', JSON.stringify(newDaily));
-
-    setIsRegistered(true);
+    if (!error) {
+      setIsRegistered(true);
+      fetchRankings(); // 再読み込み
+    } else {
+      alert("登録に失敗しました。もう一度お試しください。");
+    }
   };
 
   const formatTime = (ms: number) => {
