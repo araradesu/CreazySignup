@@ -117,7 +117,7 @@ const StartScreen: React.FC = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={startGame}
-        className="group relative flex items-center justify-center px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xl rounded-lg overflow-hidden transition-all shadow-md hover:shadow-lg w-full max-w-sm"
+        className="group relative flex items-center justify-center px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xl rounded-lg overflow-hidden transition-all shadow-md hover:shadow-lg w-full max-w-sm mb-8"
       >
         <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
         <span className="relative flex items-center">
@@ -125,6 +125,10 @@ const StartScreen: React.FC = () => {
           ゲームスタート
         </span>
       </motion.button>
+
+      <footer className="w-full text-center text-gray-300 text-xs mt-4">
+        ver.1.2
+      </footer>
     </div>
   );
 };

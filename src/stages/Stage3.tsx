@@ -20,12 +20,12 @@ const INCORRECT_FILENAMES = [
 
 const ALL_ANIMALS: Partial<TileData>[] = CORRECT_FILENAMES.map(filename => ({
   isAnimal: true,
-  imgSrc: `/Stage3_question/Correct/${filename}`
+  imgSrc: `Stage3_question/Correct/${filename}`
 }));
 
 const ALL_OTHERS: Partial<TileData>[] = INCORRECT_FILENAMES.map(filename => ({
   isAnimal: false,
-  imgSrc: `/Stage3_question/Incorrect/${filename}`
+  imgSrc: `Stage3_question/Incorrect/${filename}`
 }));
 
 const generateTiles = (): TileData[] => {
@@ -100,7 +100,7 @@ const Stage3: React.FC = () => {
         <div className="w-28 h-28 bg-white flex items-center justify-center p-1.5 shadow-sm shrink-0">
           <div className="w-full h-full bg-gray-100 flex items-center justify-center border border-gray-200 relative overflow-hidden">
              {/* 例題画像 */}
-             <img src="/Stage3_question/Example.png" alt="例題" className="w-full h-full object-cover" />
+             <img src="Stage3_question/Example.png" alt="例題" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

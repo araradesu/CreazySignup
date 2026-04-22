@@ -140,10 +140,17 @@ const Stage2: React.FC = () => {
 
   const triggerError = () => {
     buttonControls.start({ x: [0, -10, 10, -10, 10, 0], scale: 1, transition: { duration: 0.4 } });
+    setHoldStart(null);
+  };
+
+  const resetStage2 = () => {
+    setCheckedItems([false, false, false, false, false]);
+    setCheckPath([]);
     setClickCount(0);
     setMashStartTime(null);
-    setHoldProgressMs(0);
     setHoldStart(null);
+    setHoldProgressMs(0);
+    buttonControls.set({ scale: 1 });
   };
 
   const submit = () => {
@@ -247,16 +254,25 @@ const Stage2: React.FC = () => {
       </div>
 
       <div className="w-full flex justify-center relative">
-        <motion.button
-          animate={buttonControls}
-          whileTap={buttonRule.type === 'mash' ? { scale: 0.92 } : undefined}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerLeave}
-          className="relative px-12 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded select-none shadow-md"
-        >
-          <span className="relative z-10">同意する</span>
-        </motion.button>
+        <div className="flex items-center gap-4">
+          <motion.button
+            animate={buttonControls}
+            whileTap={buttonRule.type === 'mash' ? { scale: 0.92 } : undefined}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerLeave}
+            className="relative px-12 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded select-none shadow-md"
+          >
+            <span className="relative z-10">同意する</span>
+          </motion.button>
+          
+          <button
+            onClick={resetStage2}
+            className="text-gray-400 hover:text-gray-600 text-sm font-medium transition-colors"
+          >
+            リセット
+          </button>
+        </div>
       </div>
     </div>
   );

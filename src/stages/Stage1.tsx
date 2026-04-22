@@ -157,6 +157,7 @@ const Stage1: React.FC = () => {
           <input 
             type="text" name="password" value={formData.password} onChange={handleChange} placeholder="条件を満たす強力なパスワード" autoComplete="new-password"
             className="w-full bg-white border border-gray-300 text-gray-900 rounded-[4px] p-3 text-lg font-mono focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none mb-4"
+            lang="en"
           />
           
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
