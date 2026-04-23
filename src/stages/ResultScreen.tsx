@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/useGameStore';
-import { Trophy, TimerReset, Sparkles, Send, Calendar } from 'lucide-react';
+import { Trophy, TimerReset, Sparkles, Send, Calendar, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '../utils/supabase';
 
@@ -77,6 +77,13 @@ const ResultScreen: React.FC = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${Math.floor(milliseconds / 10).toString().padStart(2, '0')}`;
   };
 
+  const handleShareX = () => {
+    const timeStr = formatTime(timerMs);
+    const text = `#Crazy_Sign_Up\n\n理不尽な会員登録サイトに\n【${timeStr}】秒で登録しました\n\n会員登録はコチラ↓\nhttps://araradesu.github.io/CreazySignup/`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="w-full bg-white border border-gray-200 rounded-xl p-8 md:p-12 shadow-xl flex flex-col items-center">
       
@@ -95,11 +102,19 @@ const ResultScreen: React.FC = () => {
 
       <div className="bg-gray-50 border border-gray-100 rounded-xl p-6 w-full max-w-sm flex flex-col items-center justify-center mb-8 shadow-sm">
         <span className="text-gray-400 font-bold mb-2 tracking-widest text-sm">CLEAR TIME</span>
-        <div className="flex items-center text-4xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">
+        <div className="flex items-center text-4xl md:text-5xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 mb-4">
           <Sparkles className="w-6 h-6 text-cyan-400 mr-2 opacity-50" />
           {formatTime(timerMs)}
           <Sparkles className="w-6 h-6 text-indigo-400 ml-2 opacity-50" />
         </div>
+        
+        <button
+          onClick={handleShareX}
+          className="flex items-center gap-2 px-6 py-2.5 bg-black hover:bg-gray-800 text-white rounded-full transition-all hover:scale-105 active:scale-95 shadow-md text-sm font-bold"
+        >
+          <Share2 className="w-4 h-4" />
+          Xにポストする
+        </button>
       </div>
 
       {!isRegistered ? (
@@ -109,6 +124,7 @@ const ResultScreen: React.FC = () => {
             <input
               type="text"
               placeholder="ニックネームを入力"
+              maxLength={10}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
