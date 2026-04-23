@@ -121,21 +121,22 @@ const StartScreen: React.FC = () => {
                   <div className="flex items-center gap-4">
                     <span className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold ${
                       i === 0 ? 'bg-yellow-500/20 text-yellow-400' : 
-                      i === 1 ? 'bg-gray-400/20 text-gray-300' : 
-                      i === 2 ? 'bg-orange-500/20 text-orange-400' : 'bg-white/5 text-gray-500'
+                      i === 0 ? 'bg-yellow-100 text-yellow-600' : 
+                      i === 1 ? 'bg-gray-100 text-gray-500' : 
+                      i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-gray-50 text-gray-400'
                     }`}>
                       {i + 1}
                     </span>
                     <div className="flex flex-col">
-                      <span className="font-bold text-gray-200 text-sm truncate max-w-[150px]">{rank.name}</span>
-                      {tab === 'all' && <span className="text-[10px] text-indigo-400/60 font-mono">{rank.date}</span>}
+                      <span className="font-black text-gray-900 text-sm truncate max-w-[150px]">{rank.name}</span>
+                      {tab === 'all' && <span className="text-[10px] text-gray-500 font-mono font-bold">{rank.date}</span>}
                     </div>
                   </div>
-                  <span className="font-mono text-sm font-bold text-indigo-400">{formatTime(rank.time)}</span>
+                  <span className="font-mono text-sm font-bold text-indigo-600">{formatTime(rank.time)}</span>
                 </div>
               ))}
               {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
-                <p className="text-center text-indigo-300/40 text-xs py-10">まだランキングデータがありません</p>
+                <p className="text-center text-gray-400 text-xs py-10">まだランキングデータがありません</p>
               )}
             </>
           )}

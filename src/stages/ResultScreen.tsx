@@ -169,11 +169,11 @@ const ResultScreen: React.FC = () => {
                       {i + 1}
                     </span>
                     <div className="flex flex-col">
-                      <span className="font-bold text-gray-700 text-sm truncate max-w-[120px]">{rank.name}</span>
-                      {tab === 'all' && <span className="text-[10px] text-gray-400 font-mono">{rank.date}</span>}
+                      <span className="font-black text-gray-900 text-sm truncate max-w-[120px]">{rank.name}</span>
+                      {tab === 'all' && <span className="text-[10px] text-gray-500 font-mono font-bold">{rank.date}</span>}
                     </div>
                   </div>
-                  <span className="font-mono text-xs font-bold text-indigo-500">{formatTime(rank.time)}</span>
+                  <span className="font-mono text-xs font-bold text-indigo-600">{formatTime(rank.time)}</span>
                 </motion.div>
               ))}
               {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
