@@ -15,8 +15,10 @@ const StartScreen: React.FC = () => {
   const [allTimeRankings, setAllTimeRankings] = React.useState<RankingEntry[]>([]);
   const [dailyRankings, setDailyRankings] = React.useState<RankingEntry[]>([]);
   const [tab, setTab] = React.useState<'all' | 'daily'>('all');
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const fetchRankings = React.useCallback(async () => {
+    setIsLoading(true);
     const today = new Date().toLocaleDateString('ja-JP');
 
     // 歴代ランキング取得
@@ -36,6 +38,7 @@ const StartScreen: React.FC = () => {
       .order('time', { ascending: true });
 
     if (dailyData) setDailyRankings(dailyData);
+    setIsLoading(false);
   }, []);
 
   React.useEffect(() => {
@@ -105,20 +108,38 @@ const StartScreen: React.FC = () => {
             </button>
           </div>
 
-          <div className="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
-            {(tab === 'all' ? allTimeRankings : dailyRankings).map((rank, i) => (
-              <div key={i} className="flex items-center justify-between p-1.5 rounded bg-white border border-gray-100 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black text-gray-300 w-4">{i + 1}</span>
-                  <span className="font-bold text-gray-700 text-xs truncate max-w-[80px]">{rank.name}</span>
+          <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-10 gap-2 text-indigo-300 italic text-sm">
+              <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+              データを取得中...
+            </div>
+          ) : (
+            <>
+              {(tab === 'all' ? allTimeRankings : dailyRankings).map((rank, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <span className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold ${
+                      i === 0 ? 'bg-yellow-500/20 text-yellow-400' : 
+                      i === 1 ? 'bg-gray-400/20 text-gray-300' : 
+                      i === 2 ? 'bg-orange-500/20 text-orange-400' : 'bg-white/5 text-gray-500'
+                    }`}>
+                      {i + 1}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-gray-200 text-sm truncate max-w-[150px]">{rank.name}</span>
+                      {tab === 'all' && <span className="text-[10px] text-indigo-400/60 font-mono">{rank.date}</span>}
+                    </div>
+                  </div>
+                  <span className="font-mono text-sm font-bold text-indigo-400">{formatTime(rank.time)}</span>
                 </div>
-                <span className="font-mono text-[10px] font-bold text-indigo-500">{formatTime(rank.time)}</span>
-              </div>
-            ))}
-            {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
-              <p className="text-center text-gray-400 text-[10px] py-8">No records yet</p>
-            )}
-          </div>
+              ))}
+              {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
+                <p className="text-center text-indigo-300/40 text-xs py-10">まだランキングデータがありません</p>
+              )}
+            </>
+          )}
+        </div>
         </motion.div>
       </div>
 

@@ -50,6 +50,7 @@ const ResultScreen: React.FC = () => {
 
   const handleRegister = async () => {
     if (!nickname.trim()) return;
+    setIsLoading(true);
     const today = new Date().toLocaleDateString('ja-JP');
     
     // Supabaseに登録
@@ -59,10 +60,12 @@ const ResultScreen: React.FC = () => {
 
     if (!error) {
       setIsRegistered(true);
-      fetchRankings(); // 再読み込み
+      await fetchRankings(); // 再読み込み
     } else {
-      alert("登録に失敗しました。もう一度お試しください。");
+      console.error("Supabase Error:", error);
+      alert(`登録に失敗しました。\n理由: ${error.message}\n(SQL設定やポリシーを確認してください)`);
     }
+    setIsLoading(false);
   };
 
   const formatTime = (ms: number) => {
@@ -143,31 +146,40 @@ const ResultScreen: React.FC = () => {
         </div>
 
         <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
-          {(tab === 'all' ? allTimeRankings : dailyRankings).map((rank, i) => (
-            <motion.div 
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              key={i} 
-              className="flex items-center justify-between p-2 rounded bg-gray-50/50 border border-gray-100"
-            >
-              <div className="flex items-center gap-3">
-                <span className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${
-                  i === 0 ? 'bg-yellow-100 text-yellow-700' : 
-                  i === 1 ? 'bg-gray-200 text-gray-700' : 
-                  i === 2 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-400'
-                }`}>
-                  {i + 1}
-                </span>
-                <div className="flex flex-col">
-                  <span className="font-bold text-gray-700 text-sm truncate max-w-[120px]">{rank.name}</span>
-                  {tab === 'all' && <span className="text-[10px] text-gray-400 font-mono">{rank.date}</span>}
-                </div>
-              </div>
-              <span className="font-mono text-xs font-bold text-indigo-500">{formatTime(rank.time)}</span>
-            </motion.div>
-          ))}
-          {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
-            <p className="text-center text-gray-400 text-xs py-8">まだ記録がありません</p>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-10 gap-2 text-gray-400 italic text-sm">
+              <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              ランキングを読み込み中...
+            </div>
+          ) : (
+            <>
+              {(tab === 'all' ? allTimeRankings : dailyRankings).map((rank, i) => (
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  key={i} 
+                  className="flex items-center justify-between p-2 rounded bg-gray-50/50 border border-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${
+                      i === 0 ? 'bg-yellow-100 text-yellow-700' : 
+                      i === 1 ? 'bg-gray-200 text-gray-700' : 
+                      i === 2 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-400'
+                    }`}>
+                      {i + 1}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-gray-700 text-sm truncate max-w-[120px]">{rank.name}</span>
+                      {tab === 'all' && <span className="text-[10px] text-gray-400 font-mono">{rank.date}</span>}
+                    </div>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-indigo-500">{formatTime(rank.time)}</span>
+                </motion.div>
+              ))}
+              {(tab === 'all' ? allTimeRankings : dailyRankings).length === 0 && (
+                <p className="text-center text-gray-400 text-xs py-8">まだ記録がありません</p>
+              )}
+            </>
           )}
         </div>
       </div>
